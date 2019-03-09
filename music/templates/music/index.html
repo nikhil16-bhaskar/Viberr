@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles%}
+<head>
+    <meta charset="UTF-8">
+    <title>Cool Website</title>
+    <!-- this cdn bootstrap link, in this we do not have to download bootstrap it is stored on someone else's computer in the world and we just refer to it-->
+    <!-- cdn = Content Delivery Network -->
+    <link rel = "stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+
+    <link rel = "stylesheet" type="text/css" href="{% static 'music/details_style.css' %} "/>
+
+</head>
+<body>
+<nav class = "navbar navbar-default">
+    <div class = "container-fluid">
+        <!-- Logo Viberr if we click on it we will get to home page(index.html) of website -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url 'music:index' %}">Viberr</a>
+        </div>
+
+    </div>
+
+</nav>
+<p><h1>My Albums</h1></p>
+{% if all_albums  %}
+    <ul>
+        {% for album in all_albums %}
+        <li>
+            <!--when making dynamic url 'music:details' where music is Namespace and details is url name attribute. -->
+            <a href="{% url 'music:details' album.id %}">{{album.album_title}}</a> <!-- this is a dynamic url 'details' is name of url in url patterns and album.id is the variable name.-->
+        </li>
+        {% endfor %}
+
+    </ul>
+{% else %}
+    <h3> No Albums Added</h3>
+{% endif %}
+</body>
+</html>
