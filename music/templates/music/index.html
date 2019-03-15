@@ -1,40 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-{% load staticfiles%}
-<head>
-    <meta charset="UTF-8">
-    <title>Cool Website</title>
-    <!-- this cdn bootstrap link, in this we do not have to download bootstrap it is stored on someone else's computer in the world and we just refer to it-->
-    <!-- cdn = Content Delivery Network -->
-    <link rel = "stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+{% extends 'music/base.html' %} <!-- to include a template -->
 
-    <link rel = "stylesheet" type="text/css" href="{% static 'music/details_style.css' %} "/>
+{% block body %}
+    {% load staticfiles %}
 
-</head>
-<body>
-<nav class = "navbar navbar-default">
-    <div class = "container-fluid">
-        <!-- Logo Viberr if we click on it we will get to home page(index.html) of website -->
-        <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'music:index' %}">Viberr</a>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+
+            <!--{% for album in all_albums %}-->
+    <div class="row">
+            <div class="col-sm-3">
+            <div class="card">
+                <img class="card-img-top" src="{{album.album_logo.url}}" alt="Card image">
+                <div class="card-block">
+                    <h4 class="card-title">{{album.album_title}}</h4>
+                    <p class="card-text">{{album.artist}}</p>
+                    <p class="card-text"><small class="text-muted">{{album.genre}}</small></p>
+
+
+                    <a href="{% url 'music:details' album.id %}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+           <!-- {% endfor %}-->
         </div>
-
+<!--
+        <div class="col-sm-3">
+            <div class="card">
+                <img class="card-img-top" src="{% static 'music/guitar.jpeg' %}" alt="Card image">
+                <div class="card-block">
+                    <h4 class="card-title">Card title</h4>
+                    <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    <a href="{% url 'music:details' 2 %}" class="btn btn-primary">Details</a>
+                </div>
+            </div>
+        </div>
+-->
     </div>
+    </div>
+    </div>
+</div>
 
-</nav>
-<p><h1>My Albums</h1></p>
-{% if all_albums  %}
-    <ul>
-        {% for album in all_albums %}
-        <li>
-            <!--when making dynamic url 'music:details' where music is Namespace and details is url name attribute. -->
-            <a href="{% url 'music:details' album.id %}">{{album.album_title}}</a> <!-- this is a dynamic url 'details' is name of url in url patterns and album.id is the variable name.-->
-        </li>
-        {% endfor %}
 
-    </ul>
-{% else %}
-    <h3> No Albums Added</h3>
-{% endif %}
-</body>
-</html>
+
+{% endblock %}

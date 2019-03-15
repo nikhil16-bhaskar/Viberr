@@ -120,3 +120,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'media') #this will create a directory to store media files in our computer
+MEDIA_URL = '/music/' #this is the url in browser

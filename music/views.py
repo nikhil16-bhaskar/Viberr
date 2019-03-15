@@ -1,49 +1,78 @@
-from django.http import HttpResponse
-from django.template import loader
-from django.shortcuts import render, get_object_or_404 #this will either give object or 404 error it basically works live try catch
-from .models import Album,Song
-# Create your views here.
+from django.views import generic
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login
+from django.views.generic import View
+from .models import Album
+from .forms import UserForm
+
+
+class IndexView(generic.ListView): #inheriting the generic list view, there are other generic views here we are using list
+    template_name = 'music/index.html' #template name to which this class plugins
+    context_object_name = 'all_albums' #context object name is the fixed variable name,it is used to change name of object_list to any name you want like here all albums
+
+    def get_queryset(self): #queries database for all objects in album and returns object_list
+        return Album.objects.all()
+
+
+class DetailView(generic.DetailView): #using the generic detail view
+    model = Album #which model we are refering
+    template_name = 'music/details.html'
+
+
+class AlbumCreate(CreateView): #now you want to create a view
+    model = Album #what type of object will new view have? ans-Album, oh so we we are making a new album
+    fields = ['artist', 'album_title', 'genre', 'album_logo'] #what fields will the new album have/we want to show.
+
+
+class AlbumUpdate(UpdateView):
+    model = Album
+    fields = ['artist', 'album_title', 'genre', 'album_logo']
 
 
 
-def index(request): # we always pass in a request
+#class AlbumDelete(DeleteView):
+ #   model = Album
+  #  success_url = reverse_lazy('music:index') #when we will delete  any view so it will take us to index.html
+    #success_url is used when we successfully delete something.
 
-#making clickable links for albums
+class UserFormView(View):
+    form_class = UserForm #blueprint from where we will take our form
+    template_name = 'music/registration_form.html' #html file associated with form_class
 
-    all_albums = Album.objects.all()
-    template = loader.get_template('music/index.html') #loads the template from templates folder here path starts from music coz django knows we have made a templates folder
-    #context is dictionary info the html needs to work
-    context = {
-        'all_albums': all_albums,
-    }
-
-    return HttpResponse(template.render(context, request))
+    #display a blank form to user
+    def get(self,request):
+        form = self.form_class(None)
+        return render(request, self.template_name, {'form':form})
 
 
-def details(request, album_id):
-    '''try to find the primary key which user requested in DB and if pk did not match album_id which user requested
-        then raise the 404 exception'''
 
-    album = get_object_or_404(Album, pk = album_id)
-    context = {
-        'album': album,
-    }
+    def post(self,request):
+        form = self.form_class(request.POST)
 
-    #album in context dict and get_obj_404 are same.
-    #render method is compact form to load the template and give its http response
-    return render(request, 'music/details.html', context)
+        if form.is_valid(): #this will check the basic validation, is_valid does the basic validation of our form
+            user = form.save(commit=False) #form is saved to an object user but not to database
 
-def favorite(request, album_id):
-    album = get_object_or_404(Album, pk = album_id)
-    context = {'album':album}
-    try:
-        selected_song = album.song_set.get(pk = request.POST['song'])
-    except(KeyError, Song.DoesNotExist):
-        return render(request, 'music/details.html',{'album':album,
-                                                     'error_message':"You did not select valid song"})
-    else:
-        selected_song.is_favorite = True
-        selected_song.save()
-        return render(request, 'music/details.html', context)
+            #cleaned normalized data so that every one has uniform pattern
 
-    
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+
+            user.set_password(password) #hash value password is stored in DB and not plain text,if plain text is stored ot will throw errors
+
+            user.save() #saved to database
+
+            user = authenticate(username = username, password =password) #authenticate the user if he./she is in DB(already registered)
+
+            if user is not None: #if user is there
+                if user.is_active: #and if user is active i.e his account is not disabled or banned by website company.
+                    login(request,user) #user is permitted to login(session is given to him/her)
+                    return redirect('music:index') #after login he/she is redirected to home page
+
+        return render(request,self.template_name,{'form':form}) #if user is not in DB he is given blank form
+
+
+
+
+

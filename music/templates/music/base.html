@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Cool Website{% endblock %}</title> <!-- title is just the name of the block-->
+    <!-- this cdn bootstrap link, in this we do not have to download bootstrap it is stored on someone else's computer in the world and we just refer to it-->
+    <!-- cdn = Content Delivery Network -->
+    <link rel = "stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel="stylesheet" type="text/css">
+    <link rel = "stylesheet" type="text/css" href="{% static 'music/details_style.css' %} "/>
+</head>
+<body>
+<nav class = "navbar navbar-inverse">
+    <div class = "container-fluid">
+        <!-- Logo Viberr if we click on it we will get to home page(index.html) of website -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <!-- 3 spans to put 3 lines(the icon that appears on top right corner to display contents in menu) when the screen is squeezedor if it is open on mobile phones-->
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'music:index' %}">Viberr</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="{% url 'music:index' %}">
+                        <span class="glyphicon glyphicon-cd" aria-hidden="true"></span>&nbsp; <!-- puts CD icon in from of Album-->
+                        Albums
+                    </a>
+                <li class="">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;<!-- puts music icon in front of Songs-->
+                        Songs
+                    </a>
+
+            </ul>
+
+            <form class="navbar-form navbar-left" role="search" method="get" action="#">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="q" value="">
+                </div>
+                <button type="submit" class="btn btn-default">Search</button>
+            </form>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                    <a href="{% url 'music:album-add' %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;
+                        Add Albums
+                    </a>
+                <li class="">
+                    <a href="{% url 'music:index' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp;
+                        Logout
+                    </a>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+{% block body %} <!-- body is just the name of the block-->
+{% endblock %}
+</body>
+</html>

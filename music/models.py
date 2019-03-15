@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 
@@ -6,7 +7,11 @@ class Album(models.Model): #always all the classes are inherited with models.Mod
     artist = models.CharField(max_length= 250) #CharField is just text or characters and max_length is max charaters it can have
     album_title = models.CharField(max_length=500)
     genre = models.CharField(max_length=100)
-    album_logo = models.CharField(max_length=1000)
+    album_logo = models.FileField()
+
+
+    def get_absolute_url(self):
+        return reverse('music:details', kwargs={'pk': self.pk}) #go to details view with pk of current object,
 
     '''this is a string dunder(double underscores) function which will show the info about objects of 
         album class in django shell while populating database. '''
